@@ -4,7 +4,7 @@ namespace BlabberApp.Domain
 {
     public interface IRepository<T> where T : EntityBase
     {
-        void Create(T entity);
+        void Insert(T entity);
         void Update(T entity);
         void Delete(T entity);
         T GetById(int id);

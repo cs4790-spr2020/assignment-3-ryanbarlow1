@@ -8,21 +8,20 @@ namespace BlabberApp.DataStore
 {
     public class InMemory<T> : IRepository<T> where T : EntityBase
     {
-        private Context _context;
+        private IContext _context;
         private DbSet<T> _entities;
 
-        public InMemory(Context context)
+        public InMemory(IContext context)
         {
             _context = context;
             _entities = context.Set<T>();
         }
 
-        public void Create(T entity)
+        public void Insert(T entity)
         {
             if (entity == null)
-            {
-                throw new ArgumentNullException();
-            }
+                throw new ArgumentNullException(nameof(entity));
+            
             _entities.Add(entity);
             _context.SaveChanges();
         }
@@ -30,18 +29,17 @@ namespace BlabberApp.DataStore
         public void Update(T entity)
         {
             if (entity == null)
-            {
-                throw new ArgumentNullException();
-            }
+                throw new ArgumentNullException(nameof(entity));
+            
+            _entities.Update(entity);
             _context.SaveChanges();
         }
 
         public void Delete(T entity)
         {
             if (entity == null)
-            {
-                throw new ArgumentNullException();
-            }
+                throw new ArgumentNullException(nameof(entity));
+            
             _entities.Remove(entity);
             _context.SaveChanges();
         }
@@ -51,12 +49,12 @@ namespace BlabberApp.DataStore
             if (id < 1)
                 return null;
             
-            return _entities.FirstOrDefault(s => s.Id == id);
+            return _entities.Find(id);
         }
 
         public IEnumerable<T> GetAll()
         {
-            return _entities.AsEnumerable();
+            return _entities.AsQueryable();
         }
     }
 }
